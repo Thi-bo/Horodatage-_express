@@ -28,6 +28,9 @@ app.get("/api/hello", function (req, res) {
 app.get('/api/:date?', (req, res) => {
   const dateString = req.params.date;
 
+  if (dateString) {
+
+
   // Vérifier si le paramètre est un horodatage Unix valide
   const unixDate = Number(dateString);
   if (!isNaN(unixDate)) {
@@ -51,14 +54,14 @@ app.get('/api/:date?', (req, res) => {
     }
   }
 
+} else {
   // Si aucune date n'est fournie, renvoyer l'heure actuelle
-  if (!dateString) {
-    const now = new Date();
-    const unix = now.getTime();
-    const utc = now.toUTCString();
+  const now = new Date();
+  const unix = now.getTime(); // Horodatage Unix en millisecondes
+  const utc = now.toUTCString(); // Date au format UTC
 
-    res.json({ unix, utc });
-  }
+  res.json({ unix, utc });
+}
 });
 
 
