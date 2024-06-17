@@ -2,6 +2,7 @@
 // where your node app starts
 
 // init project
+
 var express = require('express');
 var app = express();
 
@@ -22,6 +23,42 @@ app.get("/", function (req, res) {
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
+});
+// Gestionnaire de route pour l'API d'horodatage
+app.get('/api/:date?', (req, res) => {
+  const dateString = req.params.date;
+
+  // Vérifier si le paramètre est un horodatage Unix valide
+  const unixDate = Number(dateString);
+  if (!isNaN(unixDate)) {
+    const date = new Date(unixDate);
+    const unix = date.getTime(); // Horodatage Unix en millisecondes
+    const utc = date.toUTCString(); // Date au format UTC
+
+    res.json({ unix, utc });
+  } else {
+    // Sinon, supposer que c'est une date au format textuel
+    const date = new Date(dateString);
+
+    // Vérifier si la date est valide
+    if (date.toString() !== 'Invalid Date') {
+      const unix = date.getTime(); // Horodatage Unix en millisecondes
+      const utc = date.toUTCString(); // Date au format UTC
+
+      res.json({ unix, utc });
+    } else {
+      res.json({ error: 'Invalid Date' });
+    }
+  }
+
+  // Si aucune date n'est fournie, renvoyer l'heure actuelle
+  if (!dateString) {
+    const now = new Date();
+    const unix = now.getTime();
+    const utc = now.toUTCString();
+
+    res.json({ unix, utc });
+  }
 });
 
 
